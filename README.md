@@ -4,6 +4,8 @@ A one-page interior color atelier. Type a room or a vibe — *white walls, light
 
 Everything runs in the browser. There is no backend, no API key, and no model call. Palettes come from HSL harmony plus a keyword-to-hue map (`blue` / `coastal` ≈ 200°, `terracotta` / `warm` ≈ 20°, `oak` / `wood` ≈ 35°, plus sage, blush, navy, sand, gold, and the rest). The same sentence always yields the same palette.
 
+**Live:** [https://klesser.github.io/palette-studio/](https://klesser.github.io/palette-studio/)
+
 ## Run locally
 
 Requires Node 20+.
@@ -31,13 +33,13 @@ The site is a static `dist/` folder. Deploy it at the project-pages base path **
 
 A workflow at `.github/workflows/pages.yml` builds on every push to `main`:
 
-1. Node 20, `npm ci`, `npm test`, `npm run build`
+1. Node 20, `npm install`, `npm test`, `npm run build`
 2. Uploads `dist` with `actions/upload-pages-artifact@v3`
 3. Deploys with `actions/deploy-pages@v4` to the `github-pages` environment
 
-Enable **GitHub Pages → Source: GitHub Actions** on the repository. The live URL will be:
+Pages source is **GitHub Actions**. The live URL is:
 
-`https://<user-or-org>.github.io/palette-studio/`
+`https://klesser.github.io/palette-studio/`
 
 If the repo is not named `palette-studio`, either rename it or change `base` in `vite.config.ts` to match the Pages path.
 
