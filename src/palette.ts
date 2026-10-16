@@ -49,6 +49,9 @@ const COLOR_HUES: Record<string, { h: number; w: number }> = {
   mint: { h: 160, w: 3 },
   emerald: { h: 152, w: 2 },
   moss: { h: 122, w: 2 },
+  cedar: { h: 22, w: 4 },
+  pine: { h: 142, w: 4 },
+  brass: { h: 43, w: 4 },
   gold: { h: 43, w: 4 },
   honey: { h: 40, w: 2 },
   yellow: { h: 48, w: 3 },
@@ -88,6 +91,8 @@ const MATERIALS: Record<string, Material> = {
   sand: { kind: 'floor', h: 38, s: 32, l: 78, w: 4 },
   beige: { kind: 'floor', h: 36, s: 24, l: 82, w: 2 },
   stone: { kind: 'floor', h: 30, s: 8, l: 70, w: 2 },
+  tatami: { kind: 'floor', h: 46, s: 32, l: 72, w: 4 },
+  concrete: { kind: 'wall', h: 220, s: 6, l: 78, w: 4 },
 }
 
 const DARK_WORDS = new Set([
@@ -101,10 +106,11 @@ const DARK_WORDS = new Set([
   'storm',
   'graphite',
   'shadow',
+  'dusk',
 ])
 
 /** Metals and sunlight tint highlight, not the accent, when another hue is present. */
-const HIGHLIGHT_ONLY = new Set(['gold', 'honey', 'sun'])
+const HIGHLIGHT_ONLY = new Set(['gold', 'honey', 'sun', 'brass'])
 
 function clamp(n: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, n))
@@ -471,7 +477,8 @@ export function generatePalette(description: string): Palette {
   const surface = makeColor(surfH, surfS, surfL)
 
   // Accent: the named color, vivid enough to read as a pillow or object.
-  const accentS = dark ? (calm ? 32 : 42) : tokenSet.has('gold') ? 48 : calm ? 28 : 44
+  const metal = tokenSet.has('gold') || tokenSet.has('brass')
+  const accentS = dark ? (calm ? 32 : 42) : metal ? 48 : calm ? 28 : 44
   const accentL = dark ? 62 : tokenSet.has('navy') && !dark ? 38 : 42
   const accent = makeColor(accentHue, accentS, accentL)
 
@@ -487,7 +494,7 @@ export function generatePalette(description: string): Palette {
     hiH = 42
     hiS = 32
     hiL = 90
-  } else if (tokenSet.has('gold')) {
+  } else if (tokenSet.has('gold') || tokenSet.has('brass')) {
     hiH = 43
     hiS = 46
     hiL = 72

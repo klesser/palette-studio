@@ -8,6 +8,7 @@ import {
   type Palette,
   type PaletteRole,
 } from './palette'
+import { pickSurpriseVibe } from './vibes'
 
 type Preset = {
   label: string
@@ -81,6 +82,12 @@ export default function App() {
   function onSubmit(event: FormEvent) {
     event.preventDefault()
     compose(prompt, PRESETS.findIndex((p) => p.prompt === prompt.trim()))
+  }
+
+  function onSurprise() {
+    const next = pickSurpriseVibe(prompt)
+    setPrompt(next)
+    compose(next, null)
   }
 
   async function copyHex(hex: string, name: string) {
@@ -160,9 +167,14 @@ export default function App() {
             />
             <div className="form-row">
               <p className="hint">Cmd or Ctrl + Enter to compose</p>
-              <button type="submit" className="compose">
-                Compose palette
-              </button>
+              <div className="form-actions">
+                <button type="button" className="ghost" onClick={onSurprise}>
+                  Surprise me
+                </button>
+                <button type="submit" className="compose">
+                  Compose palette
+                </button>
+              </div>
             </div>
           </form>
         </section>

@@ -10,6 +10,7 @@ import {
   type Palette,
   type PaletteRole,
 } from './palette'
+import { pickSurpriseVibe, SURPRISE_VIBES } from './vibes'
 
 const HEX = /^#[0-9a-f]{6}$/
 
@@ -84,6 +85,7 @@ describe('generatePalette', () => {
       'Sage green bedroom with blush pillows',
       'Navy walls and gold lamps',
       'a quiet room',
+      ...SURPRISE_VIBES,
     ]
     for (const prompt of prompts) {
       const p = generatePalette(prompt)
@@ -128,6 +130,48 @@ describe('generatePalette', () => {
     expect(p.text.hsl.l).toBeLessThan(35)
     expect(p.surface.hsl.h).toBeGreaterThan(20)
     expect(p.surface.hsl.h).toBeLessThan(45)
+  })
+})
+
+describe('surprise vibes', () => {
+  const presets = [
+    'White walls + light oak, calm.',
+    'Moody charcoal + linen.',
+    'Coastal blue + sand.',
+    'Warm terracotta + cream.',
+  ]
+
+  it('offers a short list that does not repeat the built-in presets', () => {
+    expect(SURPRISE_VIBES.length).toBeGreaterThanOrEqual(6)
+    expect(SURPRISE_VIBES.length).toBeLessThanOrEqual(8)
+    for (const vibe of SURPRISE_VIBES) {
+      expect(presets).not.toContain(vibe)
+      assertNamedHexPalette(generatePalette(vibe))
+    }
+  })
+
+  it('skips the vibe already in the field', () => {
+    const current = SURPRISE_VIBES[0]
+    const next = pickSurpriseVibe(current, () => 0)
+    expect(next).not.toBe(current)
+    expect(SURPRISE_VIBES).toContain(next)
+  })
+
+  it('paints distinct rooms for olive, moss, clay, and pine', () => {
+    const olive = generatePalette('Mid-century walnut + olive.')
+    const moss = generatePalette('Greenhouse glass + moss.')
+    const clay = generatePalette('Desert dusk + clay.')
+    const pine = generatePalette('Alpine lodge + pine.')
+
+    expect(olive.accent.hsl.h).toBeGreaterThan(60)
+    expect(olive.accent.hsl.h).toBeLessThan(95)
+    expect(moss.accent.hsl.h).toBeGreaterThan(100)
+    expect(moss.accent.hsl.h).toBeLessThan(140)
+    expect(clay.accent.hsl.h).toBeLessThan(40)
+    expect(clay.bg.hsl.l).toBeLessThan(30)
+    expect(pine.accent.hsl.h).toBeGreaterThan(125)
+    expect(pine.accent.hsl.h).toBeLessThan(160)
+    expect(hueDelta(olive.accent.hsl.h, moss.accent.hsl.h)).toBeGreaterThan(20)
   })
 })
 
